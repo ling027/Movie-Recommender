@@ -39,7 +39,7 @@ export default function RootLayout({
               letterSpacing: "-0.5px",
             }}
           >
-            🎬 CineMatch
+            CoCine
           </Link>
           <nav style={{ display: "flex", gap: "24px" }}>
             <Link

@@ -67,6 +67,13 @@ export interface ChatMessage {
   recommendations?: MovieRecommendation[];
 }
 
+export interface SessionSummary {
+  sessionId: string;
+  preview: string;
+  createdAt: string;
+  messageCount: number;
+}
+
 export function createEmptyProfile(userId: string): UserProfile {
   const now = new Date().toISOString();
   return {

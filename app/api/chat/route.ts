@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getOrCreateUser, upsertUser } from "@/lib/db";
+import { getOrCreateUser, upsertUser, saveMessage } from "@/lib/db";
 import { buildSystemPrompt } from "@/lib/promptBuilder";
 import { chatWithClaude, extractRecommendations } from "@/lib/claude";
 import { searchMovie } from "@/lib/tmdb";
-import { ChatMessage } from "@/types";
+import { ChatMessage, MovieRecommendation } from "@/types";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json() as {
       userId: string;
+      sessionId: string;
+      userMessageId: string;
       message: string;
       history: ChatMessage[];
     };
 
-    const { userId, message, history } = body;
+    const { userId, sessionId, userMessageId, message, history } = body;
     if (!userId || !message) {
       return NextResponse.json({ error: "userId and message required" }, { status: 400 });
     }
@@ -33,6 +36,23 @@ export async function POST(req: NextRequest) {
       })
     );
 
+    // Persist both messages
+    const now = new Date().toISOString();
+    saveMessage(userId, sessionId, {
+      id: userMessageId,
+      role: "user",
+      content: message,
+      timestamp: now,
+    });
+    const assistantId = uuidv4();
+    saveMessage(userId, sessionId, {
+      id: assistantId,
+      role: "assistant",
+      content: reply,
+      timestamp: now,
+      recommendations: recommendations as MovieRecommendation[],
+    });
+
     // Track recommended titles to avoid repeats
     const newTitles = rawRecommendations.map((r) => r.title);
     profile.recommendedTitles = [
@@ -41,7 +61,7 @@ export async function POST(req: NextRequest) {
     ].slice(-100);
     upsertUser(profile);
 
-    return NextResponse.json({ reply, recommendations });
+    return NextResponse.json({ reply, recommendations, assistantId });
   } catch (err) {
     console.error("[/api/chat]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

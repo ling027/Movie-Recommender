@@ -3,14 +3,14 @@ import { useState } from "react";
 import { QuickTag, MovieRecommendation } from "@/types";
 
 const TAGS: { id: QuickTag; label: string }[] = [
-  { id: "loved_it", label: "❤️ Loved it" },
-  { id: "already_seen", label: "✓ Already seen" },
-  { id: "too_long", label: "⏱ Too long" },
-  { id: "too_old", label: "📅 Too old" },
-  { id: "not_my_genre", label: "🎭 Not my genre" },
-  { id: "dislike_actor", label: "🙅 Dislike actor" },
-  { id: "too_intense", label: "😰 Too intense" },
-  { id: "too_slow", label: "🐌 Too slow" },
+  { id: "loved_it", label: " Loved it" },
+  { id: "already_seen", label: " Already seen" },
+  { id: "too_long", label: " Too long" },
+  { id: "too_old", label: " Too old" },
+  { id: "not_my_genre", label: " Not my genre" },
+  { id: "dislike_actor", label: " Dislike actor" },
+  { id: "too_intense", label: " Too intense" },
+  { id: "too_slow", label: " Too slow" },
 ];
 
 interface Props {
