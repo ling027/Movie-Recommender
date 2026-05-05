@@ -1,4 +1,4 @@
-# CineMatch 🎬
+# CoCine
 
 A conversational movie recommendation agent with memory. Tell it what you're in the mood for, get personalized picks with explained reasons, and give feedback that shapes every future recommendation.
 
@@ -43,31 +43,36 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 2. **Chat** — get 3–5 movie cards with posters, ratings, runtime, and a personalized reason
 3. **Follow up** — ask questions or refine ("something from the 90s", "shorter please")
 4. **Feedback** — click "Give Feedback" on any card, select quick tags or write a note
-5. **Profile** — visit `/profile` to see what the app has learned about you and edit it manually
+5. **Conversation history** — past chats appear in the sidebar; click any to resume it
+6. **New chat** — click "+ New Chat" to start a fresh conversation without losing old ones
+7. **Profile** — visit `/profile` to see what the app has learned about you and edit it manually
 
 ## Tech stack
 
 | Layer | Technology |
 |---|---|
 | Framework | Next.js 15 (App Router, TypeScript) |
-| Styling | Tailwind CSS |
-| AI | Claude API (`claude-sonnet-4-6`) |
+| Styling | CSS Modules (per-component `.module.css` files) |
+| AI | Claude API (`claude-sonnet-4-6` for chat, `claude-haiku-4-5` for signal extraction) |
 | Movie data | TMDB API |
-| Database | SQLite (`better-sqlite3`) |
-| Identity | Anonymous UUID (localStorage) |
+| Database | SQLite (`better-sqlite3`, WAL mode) |
+| Identity | Anonymous UUID (localStorage for user, sessionStorage for session) |
 
 ## Project structure
 
 ```
 app/
+  layout.tsx            # Root layout — header, nav (CoCine brand)
   page.tsx              # Landing / onboarding
-  chat/page.tsx         # Main chat interface
-  profile/page.tsx      # Preference profile editor
+  chat/page.tsx         # Chat interface with session sidebar
+  profile/page.tsx      # Preference profile viewer and editor
   api/
     chat/               # Claude conversation handler
     feedback/           # Feedback → profile update
+    messages/           # Chat message history by session
     movies/             # TMDB enrichment
     profile/            # Profile CRUD
+    sessions/           # Session list with previews
 components/
   chat/                 # ChatWindow, MessageBubble, InputBar
   movies/               # MovieCard, MovieGrid, FeedbackPanel
@@ -76,7 +81,7 @@ components/
 lib/
   claude.ts             # Anthropic SDK wrapper
   tmdb.ts               # TMDB search and fetch
-  db.ts                 # SQLite setup
+  db.ts                 # SQLite setup (users, feedback, messages tables)
   promptBuilder.ts      # Dynamic system prompt assembly
   profileBuilder.ts     # Feedback → preference signal extraction
 ```
