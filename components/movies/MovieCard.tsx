@@ -41,7 +41,13 @@ export default function MovieCard({ recommendation, userId, onFeedbackSubmit }: 
           {year}{runtime ? ` · ${runtime}` : ""}
           {genres.length > 0 ? ` · ${genres.join(", ")}` : ""}
         </div>
-        <div className={styles.reason}>{reason}</div>
+        <div className={styles.synopsis}>
+          {tmdbData?.overview
+            ? tmdbData.overview.length > 150
+              ? tmdbData.overview.slice(0, 150) + "…"
+              : tmdbData.overview
+            : reason}
+        </div>
         {tmdbData?.director && (
           <div className={styles.director}>Dir. {tmdbData.director}</div>
         )}
