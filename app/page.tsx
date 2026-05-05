@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import OnboardingFlow from "@/components/onboarding/OnboardingFlow";
+import styles from "./page.module.css";
 
 export default function HomePage() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Ensure userId exists
     if (!localStorage.getItem("userId")) {
       localStorage.setItem("userId", uuidv4());
     }
@@ -17,7 +17,6 @@ export default function HomePage() {
   }, []);
 
   function handleStart(message: string) {
-    // Store the initial message so chat page can send it on mount
     sessionStorage.setItem("pendingMessage", message);
     router.push("/chat");
   }
@@ -25,13 +24,7 @@ export default function HomePage() {
   if (!ready) return null;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "calc(100vh - 56px)",
-      }}
-    >
+    <div className={styles.wrapper}>
       <OnboardingFlow onStart={handleStart} />
     </div>
   );

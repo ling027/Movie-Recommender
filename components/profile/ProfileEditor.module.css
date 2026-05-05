@@ -1,0 +1,139 @@
+.section {
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: var(--foreground);
+}
+
+.tagRemoveBtn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.tagRemoveBtn:hover {
+  color: var(--foreground);
+}
+
+.addTagRow {
+  display: flex;
+  gap: 8px;
+}
+
+.addTagInput {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: var(--foreground);
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+  width: 160px;
+  transition: border-color 0.15s;
+}
+
+.addTagInput:focus {
+  border-color: var(--accent);
+}
+
+.addTagBtn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.addTagBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.runtimeRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.runtimeSlider {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.runtimeLabel {
+  color: var(--foreground);
+  font-size: 14px;
+  min-width: 60px;
+}
+
+.clearBtn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.clearBtn:hover {
+  border-color: var(--muted);
+}
+
+.saveBtn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.saveBtn:not(:disabled) {
+  cursor: pointer;
+}
+
+.saveBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

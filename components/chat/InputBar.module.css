@@ -1,0 +1,56 @@
+.bar {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  align-items: flex-end;
+}
+
+.textarea {
+  flex: 1;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: var(--foreground);
+  font-size: 15px;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  max-height: 120px;
+  overflow: auto;
+  transition: border-color 0.15s, opacity 0.15s;
+}
+
+.textarea:focus {
+  border-color: var(--accent);
+}
+
+.textarea:disabled {
+  opacity: 0.6;
+}
+
+.sendBtn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+
+.sendBtn:not(:disabled) {
+  cursor: pointer;
+}
+
+.sendBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

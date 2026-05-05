@@ -1,0 +1,12 @@
+.grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 16px 0 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.grid::-webkit-scrollbar {
+  display: none;
+}

@@ -5,6 +5,7 @@ import { useChat } from "@/hooks/useChat";
 import ChatWindow from "@/components/chat/ChatWindow";
 import InputBar from "@/components/chat/InputBar";
 import { ChatMessage, SessionSummary } from "@/types";
+import styles from "./chat.module.css";
 
 function formatDate(iso: string) {
   const d = new Date(iso);
@@ -24,21 +25,13 @@ export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const sentPending = useRef(false);
 
-  // Init user + session on mount
   useEffect(() => {
     let uid = localStorage.getItem("userId");
-    if (!uid) {
-      uid = uuidv4();
-      localStorage.setItem("userId", uid);
-    }
+    if (!uid) { uid = uuidv4(); localStorage.setItem("userId", uid); }
     setUserId(uid);
 
-    // Use session from sessionStorage, or create a new one
     let sid = sessionStorage.getItem("currentSessionId");
-    if (!sid) {
-      sid = uuidv4();
-      sessionStorage.setItem("currentSessionId", sid);
-    }
+    if (!sid) { sid = uuidv4(); sessionStorage.setItem("currentSessionId", sid); }
     setSessionId(sid);
   }, []);
 
@@ -47,13 +40,8 @@ export default function ChatPage() {
     if (res.ok) setSessions(await res.json());
   }, []);
 
-  // Load sessions list
-  useEffect(() => {
-    if (!userId) return;
-    fetchSessions(userId);
-  }, [userId, fetchSessions]);
+  useEffect(() => { if (userId) fetchSessions(userId); }, [userId, fetchSessions]);
 
-  // Load messages for current session
   useEffect(() => {
     if (!userId || !sessionId) return;
     fetch(`/api/messages?userId=${userId}&sessionId=${sessionId}`)
@@ -64,7 +52,6 @@ export default function ChatPage() {
 
   const { messages, loading, error, sendMessage } = useChat(userId, sessionId, history);
 
-  // Send pending message from onboarding
   useEffect(() => {
     if (!userId || !sessionId || sentPending.current) return;
     const pending = sessionStorage.getItem("pendingMessage");
@@ -75,7 +62,6 @@ export default function ChatPage() {
     }
   }, [userId, sessionId, sendMessage]);
 
-  // Refresh session list after a message is sent
   const prevCount = useRef(0);
   useEffect(() => {
     if (messages.length > prevCount.current && userId) {
@@ -94,7 +80,7 @@ export default function ChatPage() {
 
   function switchSession(sid: string) {
     if (sid === sessionId) return;
-    sentPending.current = true; // prevent pending message from firing
+    sentPending.current = true;
     sessionStorage.setItem("currentSessionId", sid);
     setHistory([]);
     setSessionId(sid);
@@ -102,82 +88,29 @@ export default function ChatPage() {
 
   if (!userId || !sessionId) return null;
 
-  return (
-    <div style={{ display: "flex", height: "calc(100vh - 56px)" }}>
-      {/* Sidebar */}
-      {sidebarOpen && (
-        <div
-          style={{
-            width: "260px",
-            flexShrink: 0,
-            background: "var(--surface)",
-            borderRight: "1px solid var(--border)",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
-          {/* New Chat button */}
-          <div style={{ padding: "16px 12px 12px" }}>
-            <button
-              onClick={startNewChat}
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "10px",
-                border: "1px solid var(--accent)",
-                background: "var(--accent)",
-                color: "#fff",
-                fontSize: "14px",
-                fontWeight: 600,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-              }}
-            >
-              + New Chat
-            </button>
-          </div>
+  const currentPreview = sessions.find((s) => s.sessionId === sessionId)?.preview?.slice(0, 60) ?? "New conversation";
 
-          {/* Session list */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "0 8px 16px" }}>
+  return (
+    <div className={styles.page}>
+      {sidebarOpen && (
+        <div className={styles.sidebar}>
+          <div className={styles.sidebarHeader}>
+            <button className={styles.newChatBtn} onClick={startNewChat}>+ New Chat</button>
+          </div>
+          <div className={styles.sessionList}>
             {sessions.length === 0 && (
-              <p style={{ color: "var(--muted)", fontSize: "13px", padding: "8px 8px", margin: 0 }}>
-                No conversations yet.
-              </p>
+              <p className={styles.emptySessionMsg}>No conversations yet.</p>
             )}
             {sessions.map((s) => (
               <button
                 key={s.sessionId}
                 onClick={() => switchSession(s.sessionId)}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "10px 12px",
-                  borderRadius: "8px",
-                  border: "none",
-                  background: s.sessionId === sessionId ? "var(--surface-2)" : "transparent",
-                  cursor: "pointer",
-                  marginBottom: "2px",
-                  transition: "background 0.15s",
-                }}
+                className={`${styles.sessionItem} ${s.sessionId === sessionId ? styles.sessionItemActive : ""}`}
               >
-                <div
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    color: "var(--foreground)",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    marginBottom: "3px",
-                  }}
-                >
+                <div className={styles.sessionPreview}>
                   {s.preview.length > 45 ? s.preview.slice(0, 45) + "…" : s.preview}
                 </div>
-                <div style={{ fontSize: "11px", color: "var(--muted)" }}>
+                <div className={styles.sessionMeta}>
                   {formatDate(s.createdAt)} · {Math.floor(s.messageCount / 2)} exchanges
                 </div>
               </button>
@@ -186,55 +119,22 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* Main chat area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* Topbar with toggle */}
-        <div
-          style={{
-            padding: "8px 16px",
-            borderBottom: "1px solid var(--border)",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            background: "var(--surface)",
-          }}
-        >
+      <div className={styles.chatArea}>
+        <div className={styles.topbar}>
           <button
+            className={styles.toggleBtn}
             onClick={() => setSidebarOpen((v) => !v)}
             title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
-            style={{
-              background: "none",
-              border: "1px solid var(--border)",
-              borderRadius: "6px",
-              padding: "4px 8px",
-              cursor: "pointer",
-              color: "var(--muted)",
-              fontSize: "16px",
-              lineHeight: 1,
-            }}
           >
             ☰
           </button>
-          <span style={{ fontSize: "13px", color: "var(--muted)" }}>
-            {sessions.find((s) => s.sessionId === sessionId)?.preview?.slice(0, 60) ?? "New conversation"}
-          </span>
+          <span className={styles.topbarTitle}>{currentPreview}</span>
         </div>
 
         <ChatWindow messages={messages} loading={loading} userId={userId} />
 
-        {error && (
-          <div
-            style={{
-              background: "rgba(239,68,68,0.1)",
-              color: "#dc2626",
-              padding: "8px 20px",
-              fontSize: "13px",
-              textAlign: "center",
-            }}
-          >
-            {error}
-          </div>
-        )}
+        {error && <div className={styles.error}>{error}</div>}
+
         <InputBar onSend={sendMessage} disabled={loading} />
       </div>
     </div>

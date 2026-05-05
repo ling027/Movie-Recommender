@@ -1,0 +1,103 @@
+.done {
+  padding: 16px;
+  text-align: center;
+  color: var(--accent-hover);
+  font-size: 13px;
+}
+
+.panel {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.tag:not(.tagSelected) {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+}
+
+.tagSelected {
+  border: 1px solid var(--accent);
+  background: rgba(249, 115, 22, 0.12);
+  color: var(--accent-hover);
+}
+
+.textarea {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--foreground);
+  font-size: 13px;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.textarea:focus {
+  border-color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.cancelBtn:hover {
+  border-color: var(--muted);
+}
+
+.submitBtn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.submitBtn:not(:disabled) {
+  cursor: pointer;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

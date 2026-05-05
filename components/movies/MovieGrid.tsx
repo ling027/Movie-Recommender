@@ -1,6 +1,7 @@
 "use client";
 import { MovieRecommendation } from "@/types";
 import MovieCard from "./MovieCard";
+import styles from "./MovieGrid.module.css";
 
 interface Props {
   recommendations: MovieRecommendation[];
@@ -12,17 +13,7 @@ export default function MovieGrid({ recommendations, userId, onFeedbackSubmit }:
   if (!recommendations.length) return null;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: "16px",
-        overflowX: "auto",
-        padding: "16px 0 8px",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-      }}
-      className="scrollbar-hide"
-    >
+    <div className={styles.grid}>
       {recommendations.map((rec, i) => (
         <MovieCard
           key={`${rec.title}-${i}`}

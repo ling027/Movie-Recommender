@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import styles from "./OnboardingFlow.module.css";
 
 const PROMPTS = [
   "I want something light and funny for the weekend",
@@ -22,47 +23,17 @@ export default function OnboardingFlow({ onStart }: Props) {
   }
 
   return (
-    <div
-      style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "40px 24px",
-        maxWidth: "600px",
-        margin: "0 auto",
-        width: "100%",
-      }}
-    >
-      <div style={{ fontSize: "64px", marginBottom: "24px" }}>🎬</div>
-      <h1
-        style={{
-          fontSize: "28px",
-          fontWeight: 800,
-          margin: "0 0 12px",
-          textAlign: "center",
-          letterSpacing: "-0.5px",
-        }}
-      >
-        What are you in the mood for?
-      </h1>
-      <p
-        style={{
-          color: "var(--muted)",
-          fontSize: "15px",
-          textAlign: "center",
-          margin: "0 0 32px",
-          maxWidth: "400px",
-          lineHeight: "1.6",
-        }}
-      >
+    <div className={styles.container}>
+      <div className={styles.emoji}>🎬</div>
+      <h1 className={styles.heading}>What are you in the mood for?</h1>
+      <p className={styles.subtitle}>
         Describe what you&apos;re looking for in your own words — I&apos;ll find movies
         that genuinely match your taste.
       </p>
 
-      <div style={{ width: "100%", marginBottom: "20px" }}>
+      <div className={styles.textareaWrapper}>
         <textarea
+          className={styles.textarea}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -73,65 +44,26 @@ export default function OnboardingFlow({ onStart }: Props) {
           }}
           placeholder='e.g. "I want a thoughtful sci-fi, not too long, something I can watch alone tonight"'
           rows={3}
-          style={{
-            width: "100%",
-            background: "var(--surface-2)",
-            border: "1px solid var(--border)",
-            borderRadius: "14px",
-            padding: "16px 18px",
-            color: "var(--foreground)",
-            fontSize: "15px",
-            resize: "none",
-            outline: "none",
-            fontFamily: "inherit",
-            lineHeight: "1.5",
-            boxSizing: "border-box",
-          }}
           autoFocus
         />
       </div>
 
       <button
+        className={styles.submitBtn}
         onClick={handleStart}
         disabled={!input.trim()}
-        style={{
-          background: "var(--accent)",
-          color: "#fff",
-          border: "none",
-          borderRadius: "12px",
-          padding: "14px 32px",
-          fontSize: "16px",
-          fontWeight: 700,
-          cursor: input.trim() ? "pointer" : "not-allowed",
-          opacity: input.trim() ? 1 : 0.5,
-          marginBottom: "32px",
-          width: "100%",
-          maxWidth: "300px",
-        }}
       >
         Find my movies →
       </button>
 
-      <div style={{ width: "100%" }}>
-        <p style={{ color: "var(--muted)", fontSize: "13px", marginBottom: "12px", textAlign: "center" }}>
-          Not sure? Try one of these:
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div className={styles.suggestionsWrapper}>
+        <p className={styles.suggestionsLabel}>Not sure? Try one of these:</p>
+        <div className={styles.suggestionsList}>
           {PROMPTS.map((p) => (
             <button
               key={p}
+              className={styles.suggestionBtn}
               onClick={() => onStart(p)}
-              style={{
-                background: "var(--surface-2)",
-                border: "1px solid var(--border)",
-                borderRadius: "10px",
-                padding: "12px 16px",
-                color: "var(--foreground)",
-                fontSize: "14px",
-                cursor: "pointer",
-                textAlign: "left",
-                transition: "border-color 0.15s",
-              }}
             >
               &quot;{p}&quot;
             </button>
