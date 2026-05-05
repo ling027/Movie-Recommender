@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { MovieRecommendation } from "@/types";
+import { MovieRecommendation, TMDBMovie } from "@/types";
 import { TMDB_IMAGE_BASE } from "@/lib/tmdb";
 import FeedbackPanel from "./FeedbackPanel";
 import styles from "./MovieCard.module.css";
@@ -14,7 +14,18 @@ interface Props {
 
 export default function MovieCard({ recommendation, userId, onFeedbackSubmit }: Props) {
   const [showFeedback, setShowFeedback] = useState(false);
-  const { tmdbData, title, year, reason } = recommendation;
+  const { title, year, reason } = recommendation;
+  const [tmdbData, setTmdbData] = useState<TMDBMovie | null | undefined>(recommendation.tmdbData);
+
+  useEffect(() => {
+    if (tmdbData !== null && tmdbData !== undefined) return;
+    const params = new URLSearchParams({ title });
+    if (year) params.set("year", String(year));
+    fetch(`/api/movies?${params}`)
+      .then((r) => r.json())
+      .then((data: TMDBMovie | null) => setTmdbData(data ?? null))
+      .catch(() => {});
+  }, [title, year, tmdbData]);
 
   const posterUrl = tmdbData?.posterPath ? `${TMDB_IMAGE_BASE}${tmdbData.posterPath}` : null;
   const rating = tmdbData?.voteAverage ? tmdbData.voteAverage.toFixed(1) : null;

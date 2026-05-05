@@ -46,25 +46,32 @@ export async function searchMovie(
   const key = apiKey();
   if (!key) return null;
 
-  const params = new URLSearchParams({
-    api_key: key,
-    query: title,
-    language: "en-US",
-    page: "1",
-  });
-  if (year) params.set("year", String(year));
-
-  const searchRes = await fetch(`${BASE}/search/movie?${params}`);
-  if (!searchRes.ok) return null;
-
-  const data = (await searchRes.json()) as { results: TMDBSearchResult[] };
-  if (!data.results?.length) return null;
+  async function search(withYear: boolean) {
+    const params = new URLSearchParams({
+      api_key: key,
+      query: title,
+      language: "en-US",
+      page: "1",
+    });
+    if (withYear && year) params.set("year", String(year));
+    let res = await fetch(`${BASE}/search/movie?${params}`);
+    if (res.status === 429) {
+      await new Promise((r) => setTimeout(r, 1000));
+      res = await fetch(`${BASE}/search/movie?${params}`);
+    }
+    if (!res.ok) return null;
+    const data = (await res.json()) as { results: TMDBSearchResult[] };
+    return data.results?.length ? data.results : null;
+  }
 
   const normalizedInput = normalize(title);
+
+  let results = year ? await search(true) : null;
+  if (!results?.length) results = await search(false);
+  if (!results?.length) return null;
+
   const match =
-    data.results.find(
-      (r) => normalize(r.title) === normalizedInput
-    ) ?? data.results[0];
+    results.find((r) => normalize(r.title) === normalizedInput) ?? results[0];
 
   return fetchMovieDetails(match.id);
 }
