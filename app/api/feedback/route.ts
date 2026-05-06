@@ -14,9 +14,11 @@ export async function POST(req: NextRequest) {
       reaction: FeedbackEntry["reaction"];
       quickTags: QuickTag[];
       freeText: string;
+      specifiedGenres?: string[];
+      specifiedActors?: string[];
     };
 
-    const { userId, movieTitle, tmdbId, reaction, quickTags, freeText } = body;
+    const { userId, movieTitle, tmdbId, reaction, quickTags, freeText, specifiedGenres, specifiedActors } = body;
     if (!userId || !movieTitle) {
       return NextResponse.json({ error: "userId and movieTitle required" }, { status: 400 });
     }
@@ -28,6 +30,8 @@ export async function POST(req: NextRequest) {
       reaction,
       quickTags: quickTags ?? [],
       freeText: freeText ?? "",
+      specifiedGenres: specifiedGenres ?? [],
+      specifiedActors: specifiedActors ?? [],
     };
 
     const feedbackId = uuidv4();

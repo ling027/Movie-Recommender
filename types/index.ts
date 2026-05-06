@@ -15,6 +15,8 @@ export interface FeedbackEntry {
   reaction: "liked" | "disliked" | "not_interested" | "already_seen";
   quickTags: QuickTag[];
   freeText: string;
+  specifiedGenres?: string[];
+  specifiedActors?: string[];
 }
 
 export interface UserProfile {

@@ -21,8 +21,52 @@ interface Props {
   onSubmit: () => void;
 }
 
+function ChipInput({
+  label,
+  placeholder,
+  values,
+  onChange,
+}: {
+  label: string;
+  placeholder: string;
+  values: string[];
+  onChange: (v: string[]) => void;
+}) {
+  const [input, setInput] = useState("");
+
+  function add() {
+    const v = input.trim();
+    if (v && !values.includes(v)) onChange([...values, v]);
+    setInput("");
+  }
+
+  return (
+    <div className={styles.chipBlock}>
+      <span className={styles.chipLabel}>{label}</span>
+      <div className={styles.chipRow}>
+        {values.map((v) => (
+          <span key={v} className={styles.chip}>
+            {v}
+            <button className={styles.chipRemove} onClick={() => onChange(values.filter((x) => x !== v))}>×</button>
+          </span>
+        ))}
+        <input
+          className={styles.chipInput}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+          placeholder={placeholder}
+        />
+        <button className={styles.chipAddBtn} onClick={add}>Add</button>
+      </div>
+    </div>
+  );
+}
+
 export default function FeedbackPanel({ recommendation, userId, onClose, onSubmit }: Props) {
   const [selectedTags, setSelectedTags] = useState<QuickTag[]>([]);
+  const [specifiedGenres, setSpecifiedGenres] = useState<string[]>([]);
+  const [specifiedActors, setSpecifiedActors] = useState<string[]>([]);
   const [freeText, setFreeText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -52,6 +96,8 @@ export default function FeedbackPanel({ recommendation, userId, onClose, onSubmi
           reaction: deriveReaction(),
           quickTags: selectedTags,
           freeText,
+          specifiedGenres,
+          specifiedActors,
         }),
       });
       setDone(true);
@@ -64,6 +110,9 @@ export default function FeedbackPanel({ recommendation, userId, onClose, onSubmi
   if (done) {
     return <div className={styles.done}>✓ Got it — we&apos;ll tune your recommendations.</div>;
   }
+
+  const showGenreInput = selectedTags.includes("not_my_genre");
+  const showActorInput = selectedTags.includes("dislike_actor");
 
   return (
     <div className={styles.panel}>
@@ -78,6 +127,25 @@ export default function FeedbackPanel({ recommendation, userId, onClose, onSubmi
           </button>
         ))}
       </div>
+
+      {showGenreInput && (
+        <ChipInput
+          label="Which genre?"
+          placeholder="e.g. Horror"
+          values={specifiedGenres}
+          onChange={setSpecifiedGenres}
+        />
+      )}
+
+      {showActorInput && (
+        <ChipInput
+          label="Which actor?"
+          placeholder="e.g. Adam Sandler"
+          values={specifiedActors}
+          onChange={setSpecifiedActors}
+        />
+      )}
+
       <textarea
         className={styles.textarea}
         value={freeText}

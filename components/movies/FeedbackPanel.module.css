@@ -39,6 +39,83 @@
   color: var(--accent-hover);
 }
 
+.chipBlock {
+  margin-bottom: 12px;
+}
+
+.chipLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+  color: var(--accent-hover);
+}
+
+.chipRemove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent-hover);
+  font-size: 14px;
+  padding: 0;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.chipInput {
+  flex: 1;
+  min-width: 100px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--foreground);
+  font-family: inherit;
+  outline: none;
+}
+
+.chipInput:focus {
+  border-color: var(--accent);
+}
+
+.chipAddBtn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.chipAddBtn:hover {
+  background: rgba(249, 115, 22, 0.1);
+}
+
 .textarea {
   width: 100%;
   background: var(--surface-2);

@@ -47,10 +47,13 @@ export async function updateProfileFromFeedback(
       }
     }
 
-    if (tag === "not_my_genre" && tmdbData?.genres?.length) {
-      for (const g of tmdbData.genres) {
-        p.genres.disliked = addUnique(p.genres.disliked, g.name);
-        p.genres.liked = removeItem(p.genres.liked, g.name);
+    if (tag === "not_my_genre") {
+      const genres = feedback.specifiedGenres?.length
+        ? feedback.specifiedGenres
+        : tmdbData?.genres?.map((g) => g.name) ?? [];
+      for (const g of genres) {
+        p.genres.disliked = addUnique(p.genres.disliked, g);
+        p.genres.liked = removeItem(p.genres.liked, g);
       }
     }
 
@@ -78,8 +81,11 @@ export async function updateProfileFromFeedback(
     }
 
     if (tag === "dislike_actor") {
-      // Try to extract actor from freeText
-      if (feedback.freeText) {
+      if (feedback.specifiedActors?.length) {
+        for (const actor of feedback.specifiedActors) {
+          p.actors.disliked = addUnique(p.actors.disliked, actor);
+        }
+      } else if (feedback.freeText) {
         const signals = await extractPreferenceSignals(feedback.freeText);
         if (signals.dislikedActors?.length) {
           for (const actor of signals.dislikedActors) {
