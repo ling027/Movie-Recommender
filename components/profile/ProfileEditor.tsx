@@ -51,6 +51,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function ProfileEditor({ profile, onSave }: Props) {
   const [pref, setPref] = useState(structuredClone(profile.preferences));
+  const [watched, setWatched] = useState<string[]>(profile.watchedTitles);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -74,7 +75,7 @@ export default function ProfileEditor({ profile, onSave }: Props) {
 
   async function handleSave() {
     setSaving(true);
-    await onSave({ preferences: pref });
+    await onSave({ preferences: pref, watchedTitles: watched });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -144,6 +145,15 @@ export default function ProfileEditor({ profile, onSave }: Props) {
             </button>
           )}
         </div>
+      </Section>
+
+      <Section title="Movies you've already seen">
+        <div className={styles.tagList}>
+          {watched.map((t) => (
+            <Tag key={t} label={t} onRemove={() => setWatched((prev) => prev.filter((x) => x !== t))} />
+          ))}
+        </div>
+        <AddTagInput placeholder="Add movie title…" onAdd={(v) => setWatched((prev) => prev.includes(v) ? prev : [...prev, v])} />
       </Section>
 
       <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>

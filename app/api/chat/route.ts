@@ -28,9 +28,19 @@ export async function POST(req: NextRequest) {
 
     const rawRecommendations = extractRecommendations(reply);
 
+    // Hard-filter titles Claude was told to exclude (case-insensitive)
+    const excluded = new Set(
+      [...profile.watchedTitles, ...profile.recommendedTitles].map((t) =>
+        t.toLowerCase()
+      )
+    );
+    const filtered = rawRecommendations.filter(
+      (r) => !excluded.has(r.title.toLowerCase())
+    );
+
     // Enrich with TMDB in parallel
     const recommendations = await Promise.all(
-      rawRecommendations.map(async (rec) => {
+      filtered.map(async (rec) => {
         const tmdbData = await searchMovie(rec.title, rec.year).catch(() => null);
         return { ...rec, tmdbData };
       })
@@ -54,7 +64,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Track recommended titles to avoid repeats
-    const newTitles = rawRecommendations.map((r) => r.title);
+    const newTitles = filtered.map((r) => r.title);
     profile.recommendedTitles = [
       ...profile.recommendedTitles,
       ...newTitles,
