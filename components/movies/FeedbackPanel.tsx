@@ -70,6 +70,7 @@ export default function FeedbackPanel({ recommendation, userId, onClose, onSubmi
   const [freeText, setFreeText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   function toggleTag(tag: QuickTag) {
     setSelectedTags((prev) =>
@@ -85,8 +86,9 @@ export default function FeedbackPanel({ recommendation, userId, onClose, onSubmi
 
   async function handleSubmit() {
     setSubmitting(true);
+    setSubmitError(false);
     try {
-      await fetch("/api/feedback", {
+      const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -100,8 +102,11 @@ export default function FeedbackPanel({ recommendation, userId, onClose, onSubmi
           specifiedActors,
         }),
       });
+      if (!res.ok) throw new Error("Failed");
       setDone(true);
       onSubmit();
+    } catch {
+      setSubmitError(true);
     } finally {
       setSubmitting(false);
     }
@@ -153,6 +158,9 @@ export default function FeedbackPanel({ recommendation, userId, onClose, onSubmi
         placeholder="Tell us more (optional)…"
         rows={2}
       />
+      {submitError && (
+        <div className={styles.submitError}>Something went wrong — please try again.</div>
+      )}
       <div className={styles.actions}>
         <button className={styles.cancelBtn} onClick={onClose}>Cancel</button>
         <button

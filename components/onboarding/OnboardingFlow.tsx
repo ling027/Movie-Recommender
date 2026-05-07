@@ -42,7 +42,7 @@ export default function OnboardingFlow({ onStart }: Props) {
               handleStart();
             }
           }}
-          placeholder='e.g. "I want a thoughtful sci-fi, not too long, something I can watch alone tonight"'
+          placeholder='for example: "I want some true crime documentaries with twists and turns" or "Surprise me'
           rows={3}
           autoFocus
         />

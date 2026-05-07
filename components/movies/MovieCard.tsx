@@ -18,7 +18,7 @@ export default function MovieCard({ recommendation, userId, onFeedbackSubmit }: 
   const [tmdbData, setTmdbData] = useState<TMDBMovie | null | undefined>(recommendation.tmdbData);
 
   useEffect(() => {
-    if (tmdbData !== null && tmdbData !== undefined) return;
+    if (tmdbData) return;
     const params = new URLSearchParams({ title });
     if (year) params.set("year", String(year));
     fetch(`/api/movies?${params}`)
