@@ -14,11 +14,12 @@ export async function POST(req: NextRequest) {
       reaction: FeedbackEntry["reaction"];
       quickTags: QuickTag[];
       freeText: string;
+      movieRuntime?: number | null;
       specifiedGenres?: string[];
       specifiedActors?: string[];
     };
 
-    const { userId, movieTitle, tmdbId, reaction, quickTags, freeText, specifiedGenres, specifiedActors } = body;
+    const { userId, movieTitle, tmdbId, reaction, quickTags, freeText, movieRuntime, specifiedGenres, specifiedActors } = body;
     if (!userId || !movieTitle) {
       return NextResponse.json({ error: "userId and movieTitle required" }, { status: 400 });
     }
@@ -38,9 +39,10 @@ export async function POST(req: NextRequest) {
     saveFeedback(userId, feedbackId, entry);
 
     const tmdbData = tmdbId ? await fetchMovieDetails(tmdbId).catch(() => null) : null;
+    const runtime = movieRuntime ?? tmdbData?.runtime ?? null;
 
     const profile = getOrCreateUser(userId);
-    const updatedProfile = await updateProfileFromFeedback(profile, entry, tmdbData);
+    const updatedProfile = await updateProfileFromFeedback(profile, entry, tmdbData, runtime);
     upsertUser(updatedProfile);
 
     return NextResponse.json({ success: true });

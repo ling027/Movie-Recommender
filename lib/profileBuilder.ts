@@ -16,7 +16,8 @@ function decadeLabel(year: number): string {
 export async function updateProfileFromFeedback(
   profile: UserProfile,
   feedback: FeedbackEntry,
-  tmdbData: TMDBMovie | null
+  tmdbData: TMDBMovie | null,
+  runtime: number | null = null
 ): Promise<UserProfile> {
   const updated = structuredClone(profile);
   const p = updated.preferences;
@@ -39,11 +40,14 @@ export async function updateProfileFromFeedback(
       }
     }
 
-    if (tag === "too_long" && tmdbData?.runtime) {
+    if (tag === "too_long") {
       p.runtime.prefersShorter = true;
-      const newMax = Math.min(tmdbData.runtime - 15, 120);
-      if (!p.runtime.maxMinutes || newMax < p.runtime.maxMinutes) {
-        p.runtime.maxMinutes = Math.max(newMax, 60);
+      const movieRuntime = runtime ?? tmdbData?.runtime ?? null;
+      if (movieRuntime) {
+        const newMax = Math.min(movieRuntime - 15, 120);
+        if (!p.runtime.maxMinutes || newMax < p.runtime.maxMinutes) {
+          p.runtime.maxMinutes = Math.max(newMax, 60);
+        }
       }
     }
 

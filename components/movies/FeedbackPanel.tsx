@@ -95,6 +95,7 @@ export default function FeedbackPanel({ recommendation, userId, onClose, onSubmi
           userId,
           movieTitle: recommendation.title,
           tmdbId: recommendation.tmdbData?.id ?? null,
+          movieRuntime: recommendation.tmdbData?.runtime ?? null,
           reaction: deriveReaction(),
           quickTags: selectedTags,
           freeText,
